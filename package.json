@@ -1,11 +1,18 @@
 {
   "name": "inft-test",
+  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
   "scripts": {
+    "dev": "node src/main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.4"
+  }
 }
