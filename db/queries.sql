@@ -21,3 +21,4 @@ SELECT code, description, type FROM referrral WHERE id=1;
 
 DROP TABLE referral;
 
+SELECT count() FROM referral;

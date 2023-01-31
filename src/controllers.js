@@ -59,13 +59,8 @@ class RefferalController {
         return;
       }
 
-      const referrals = await getAllReferrals(currentPage, paginationNumber);
-      res.status(200).send({
-        page: page,
-        currentPage: referrals.length,
-        pageLength: 0,
-        referrals: referrals
-      })
+      const referrals = await getAllReferrals(parseInt(currentPage), paginationNumber);
+      res.status(200).send(referrals);
     }
     catch (err) {
       next(err)

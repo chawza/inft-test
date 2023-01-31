@@ -9,6 +9,13 @@ export class DataNotFound extends Error {
   }
 }
 
+export class ClientError extends Error {
+  constructor(message = "Client Error", status = 400) {
+    super(message);
+    this.status = status;
+  }
+}
+
 class ReferralRepository {
   static async getReferralById(id) {
     const sql = `SELECT id, code, description, type, added_by, created_at FROM referral WHERE id=${id};`;
@@ -22,22 +29,48 @@ class ReferralRepository {
     })
   }
 
-  static async getAllReferrals(page, pageNumbering=10) {
-    const sql = `
-      SELECT
-        id, code, description, type, added_by, created_at
-      FROM referral
-      LIMIT ${pageNumbering}
-      OFFSET ${pageNumbering * (page - 1)}
-    `
+  static async countAllReferrals() {
+    const sql = 'SELECT count() FROM referral;';
     return new Promise(resolve => {
       db.get(sql, (err, row) => {
         if (err) {
           throw new DataNotFound();  
         }
-        resolve(row)
+        resolve(row['count()'])
       })
     })
+  }
+
+  static async getAllReferrals(page, pageNumbering=10) {
+    const numberReferrals = await ReferralRepository.countAllReferrals();
+    const maxPage = Math.ceil(numberReferrals / pageNumbering);
+    if (page > maxPage) {
+      throw new ClientError('page number has exceded max number of page');
+    }
+
+    const sql = `
+      SELECT
+        id, code, description, type, added_by, created_at
+      FROM referral
+      LIMIT ${pageNumbering}
+      OFFSET ${(page - 1) * pageNumbering}
+    `
+
+    const referrals =  await new Promise(resolve => {
+      db.all(sql, (err, rows) => {
+        if (err) {
+          throw new DataNotFound();  
+        }
+        resolve(rows)
+      })
+    })
+
+    return {
+      number: numberReferrals,
+      maxPage,
+      currentPage: page,
+      referrals
+    }
   }
 
   static async createNewReferral(code, description, type, added_by) {
@@ -79,7 +112,6 @@ class ReferralRepository {
         if (error) {
           throw new Error(error);
         }
-        console.log(result)
         resolve();
       })
     })

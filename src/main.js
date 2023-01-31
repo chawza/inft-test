@@ -10,9 +10,9 @@ server.use(ApiLog)
 server.use(express.json());
 
 server.post('/api/referral', addNewReferral);
-server.post('/api/referral/all', getAllReferrals);
-server.get('/api/referral/:id', getReferral)
-server.put('/api/referral/:id', editReferral);
+server.get('/api/referral/all', getAllReferrals);
+server.get('/api/referral/:id(\\d+)', getReferral)
+server.put('/api/referral/:id(\\d+)', editReferral);
 
 server.use(ErrorLog);
 
