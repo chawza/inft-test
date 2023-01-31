@@ -1,7 +1,7 @@
 import random
 import math
 
-CA = [29,23,19,17,13,1,7,5,3,2.23232]
+CA = [29,23,19,17,13,1,7,5,3,2]
 
 def do_show():
   for index in range(0, len(CA), 10):
